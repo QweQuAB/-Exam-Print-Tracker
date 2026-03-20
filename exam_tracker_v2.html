@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="vivid">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Print Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+/* ══════════════════════════════════════════
+   THEME VARIABLES
+══════════════════════════════════════════ */
+:root { /* VIVID */
+  --primary:#667eea; --primary2:#764ba2;
+  --grad:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  --bg:#f0f4ff; --card:#ffffff; --card-border:transparent;
+  --text:#1e293b; --text2:#64748b; --border:#e2e8f0;
+  --shadow:0 2px 12px rgba(0,0,0,.08); --shadow2:0 8px 24px rgba(102,126,234,.2);
+  --r:16px; --rsm:10px;
+  --fd:'Baloo 2',cursive; --fb:'Nunito',sans-serif; --fm:monospace;
+  --hbg:linear-gradient(135deg,#667eea,#764ba2); --htx:white;
+  --hsh:0 4px 20px rgba(102,126,234,.4);
+  --btnr:30px; --mbg:white; --mr:10px;
+  --thd:linear-gradient(135deg,#667eea,#764ba2);
+  --sr:50%; --nab:white; --nac:#667eea;
+  --received:#f59e0b; --rcvl:#fef3c7;
+  --typed:#3b82f6; --typl:#dbeafe;
+  --printed:#10b981; --prtl:#d1fae5;
+  --pending:#e5e7eb; --pendtx:#9ca3af;
+}
+[data-theme="breezy"] {
+  --primary:#0055d4; --primary2:#003da6;
+  --grad:#0055d4;
+  --bg:#fafbfc; --card:#ffffff; --card-border:1.5px solid #e4e9f0;
+  --text:#0d0d0d; --text2:#6b7280; --border:#e4e9f0;
+  --shadow:none; --shadow2:0 0 0 2px #0055d4;
+  --r:6px; --rsm:4px;
+  --fd:'DM Sans',sans-serif; --fb:'DM Sans',sans-serif; --fm:'Fira Code',monospace;
+  --hbg:#ffffff; --htx:#0d0d0d; --hsh:0 1px 0 #e4e9f0;
+  --btnr:5px; --mbg:#f4f6f8; --mr:4px;
+  --thd:#0055d4;
+  --sr:4px; --nab:#0055d4; --nac:white;
+}
+[data-theme="scholar"] {
+  --primary:#c9a84c; --primary2:#8b5e0a;
+  --grad:linear-gradient(135deg,#1d3e2c,#2e5c42);
+  --bg:#f3ede0; --card:#fffdf5; --card-border:1px solid #cbbf9a;
+  --text:#1a150a; --text2:#5c4f2e; --border:#cbbf9a;
+  --shadow:0 2px 8px rgba(26,21,10,.1); --shadow2:0 6px 20px rgba(26,21,10,.18);
+  --r:3px; --rsm:2px;
+  --fd:'Playfair Display',serif; --fb:'EB Garamond',serif; --fm:'Fira Code',monospace;
+  --hbg:linear-gradient(135deg,#1d3e2c,#2e5c42); --htx:#f3ede0; --hsh:0 4px 16px rgba(0,0,0,.3);
+  --btnr:2px; --mbg:#fffdf5; --mr:2px;
+  --thd:#1d3e2c;
+  --sr:2px; --nab:#c9a84c; --nac:#1d3e2c;
+}
+[data-theme="luxe"] {
+  --primary:#c9a84c; --primary2:#9a7620;
+  --grad:linear-gradient(135deg,#c9a84c,#e8c96a);
+  --bg:#f7f4ee; --card:#ffffff; --card-border:1px solid #e0d5c0;
+  --text:#0a1525; --text2:#4a5568; --border:#e0d5c0;
+  --shadow:0 4px 24px rgba(10,21,37,.07); --shadow2:0 12px 40px rgba(10,21,37,.14);
+  --r:1px; --rsm:1px;
+  --fd:'Cormorant Garamond',serif; --fb:'Montserrat',sans-serif; --fm:monospace;
+  --hbg:#0a1525; --htx:#f0e8d4; --hsh:none;
+  --btnr:0px; --mbg:#f7f4ee; --mr:1px;
+  --thd:#0a1525;
+  --sr:0px; --nab:#c9a84c; --nac:#0a1525;
+}
+[data-theme="eclipse"] {
+  --primary:#38bdf8; --primary2:#a78bfa;
+  --grad:linear-gradient(135deg,#38bdf8,#a78bfa);
+  --bg:#0f172a; --card:rgba(30,41,59,.75); --card-border:1px solid rgba(148,163,184,.1);
+  --text:#e2e8f0; --text2:#94a3b8; --border:rgba(148,163,184,.15);
+  --shadow:0 4px 24px rgba(0,0,0,.35); --shadow2:0 0 0 1px rgba(56,189,248,.4),0 8px 32px rgba(56,189,248,.15);
+  --r:12px; --rsm:8px;
+  --fd:'Outfit',sans-serif; --fb:'Outfit',sans-serif; --fm:'Fira Code',monospace;
+  --hbg:rgba(15,23,42,.9); --htx:#e2e8f0; --hsh:0 1px 0 rgba(148,163,184,.1);
+  --btnr:8px; --mbg:rgba(30,41,59,.5); --mr:8px;
+  --thd:linear-gradient(90deg,#1e293b,#0f172a);
+  --sr:6px; --nab:rgba(56,189,248,.15); --nac:#38bdf8;
+  --received:#f59e0b; --rcvl:rgba(245,158,11,.15);
+  --typed:#60a5fa; --typl:rgba(96,165,250,.15);
+  --printed:#34d399; --prtl:rgba(52,211,153,.15);
+  --pending:rgba(148,163,184,.2); --pendtx:#64748b;
+}
+
+/* ══════════════════════════════════════════
+   BASE STYLES
+══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+[data-theme="eclipse"] body{backdrop-filter:blur(0)}
+
+/* ── HEADER ── */
+.header{background:var(--hbg);color:var(--htx);position:sticky;top:0;z-index:100;box-shadow:var(--hsh);transition:all .3s;backdrop-filter:blur(12px)}
+.header-inner{max-width:1440px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand h1{font-family:var(--fd);font-size:1.25rem;font-weight:800;line-height:1.1}
+.brand p{font-size:.68rem;opacity:.7;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:10px}
+.nav-bar{display:flex;gap:4px;flex-wrap:wrap}
+.nav-btn{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:var(--htx);padding:7px 15px;border-radius:var(--btnr);font-family:var(--fb);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.02em}
+.nav-btn:hover,.nav-btn.active{background:var(--nab);color:var(--nac);border-color:var(--nab)}
+[data-theme="breezy"] .nav-btn{color:var(--text2);border-color:var(--border);background:white}
+[data-theme="breezy"] .nav-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+[data-theme="breezy"] .nav-btn:hover{border-color:var(--primary);color:var(--primary)}
+.hdr-actions{display:flex;align-items:center;gap:8px}
+.countdown-chip{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:var(--btnr);padding:6px 14px;font-size:.72rem;font-weight:800;text-align:center;white-space:nowrap;line-height:1.3;cursor:pointer;transition:all .2s}
+.countdown-chip:hover{background:rgba(255,255,255,.25)}
+.countdown-chip small{display:block;font-size:.6rem;opacity:.75;font-weight:600}
+[data-theme="breezy"] .countdown-chip{border-color:var(--border);color:var(--text);background:var(--bg)}
+.theme-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);color:var(--htx);width:36px;height:36px;border-radius:var(--btnr);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.theme-btn:hover{background:rgba(255,255,255,.3)}
+[data-theme="breezy"] .theme-btn{border-color:var(--border);color:var(--text);background:white}
+
+/* ── LUXE SIDEBAR ── */
+[data-theme="luxe"] .header{position:fixed;left:0;top:0;width:240px;height:100dvh;overflow:hidden auto}
+[data-theme="luxe"] .header-inner{flex-direction:column;align-items:flex-start;height:100%;padding:36px 24px;gap:0;justify-content:flex-start}
+[data-theme="luxe"] .brand{border-bottom:1px solid rgba(201,168,76,.2);padding-bottom:24px;width:100%;margin-bottom:32px}
+[data-theme="luxe"] .brand h1{font-size:1.4rem;letter-spacing:-.02em}
+[data-theme="luxe"] .header-right{flex-direction:column;width:100%;flex:1;gap:0;justify-content:space-between}
+[data-theme="luxe"] .nav-bar{flex-direction:column;width:100%;gap:0}
+[data-theme="luxe"] .nav-btn{width:100%;text-align:left;border-left:3px solid transparent;border-radius:0!important;border-top:none;border-right:none;border-bottom:none;padding:13px 16px;background:none;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+[data-theme="luxe"] .nav-btn.active{border-left-color:var(--primary);background:rgba(201,168,76,.1);color:var(--primary)}
+[data-theme="luxe"] .nav-btn:hover{background:rgba(201,168,76,.07);border-left-color:rgba(201,168,76,.4)}
+[data-theme="luxe"] .hdr-actions{flex-direction:column;width:100%;gap:8px;align-items:flex-start;border-top:1px solid rgba(201,168,76,.15);padding-top:20px;margin-top:auto}
+[data-theme="luxe"] .countdown-chip{width:100%;border-radius:1px;border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.08);color:var(--htx);text-align:left;padding:10px 14px}
+[data-theme="luxe"] .theme-btn{border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.08);color:var(--htx);border-radius:1px;width:100%;height:auto;padding:10px 14px;justify-content:flex-start;gap:8px;font-size:.75rem;font-weight:600}
+[data-theme="luxe"] .main-layout{margin-left:240px}
+@media(max-width:900px){
+  [data-theme="luxe"] .header{position:sticky;left:auto;top:0;width:auto;height:auto;overflow:visible}
+  [data-theme="luxe"] .header-inner{flex-direction:row;height:auto;padding:14px 20px;gap:12px;justify-content:space-between}
+  [data-theme="luxe"] .brand{border-bottom:none;padding-bottom:0;width:auto;margin-bottom:0}
+  [data-theme="luxe"] .header-right{flex-direction:row;width:auto;flex:none;gap:8px;justify-content:flex-start}
+  [data-theme="luxe"] .nav-bar{flex-direction:row;width:auto;gap:4px}
+  [data-theme="luxe"] .nav-btn{width:auto;text-align:center;border-left:none;border:1.5px solid rgba(255,255,255,.25);border-radius:4px!important;padding:7px 14px;text-transform:none}
+  [data-theme="luxe"] .hdr-actions{flex-direction:row;width:auto;gap:8px;border-top:none;padding-top:0;margin-top:0}
+  [data-theme="luxe"] .countdown-chip{width:auto;border-radius:4px;text-align:center;padding:6px 14px}
+  [data-theme="luxe"] .theme-btn{width:36px;height:36px;padding:0;justify-content:center;font-size:1rem;border-radius:4px}
+  [data-theme="luxe"] .main-layout{margin-left:0}
+}
+
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+.main-layout{max-width:1440px;margin:0 auto;padding:22px 18px 90px}
+[data-theme="eclipse"] .main-layout{padding-top:28px}
+.page{display:none}.page.active{display:block}
+
+/* ── SECTION HEADER ── */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.sec-title{font-family:var(--fd);font-size:1.15rem;font-weight:800}
+[data-theme="scholar"] .sec-title{font-size:1.5rem;letter-spacing:-.01em}
+[data-theme="luxe"] .sec-title{font-size:1.8rem;font-weight:400;letter-spacing:-.02em}
+[data-theme="eclipse"] .sec-title{font-weight:700;letter-spacing:-.02em}
+
+/* ── CARD ── */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;border:var(--card-border);transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:var(--shadow2)}
+[data-theme="eclipse"] .card{backdrop-filter:blur(16px)}
+.card-ttl{font-family:var(--fd);font-size:.95rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:var(--text)}
+[data-theme="scholar"] .card-ttl{font-size:1.15rem;letter-spacing:.01em;border-bottom:2px solid var(--border);padding-bottom:10px;margin-bottom:14px}
+[data-theme="luxe"] .card-ttl{font-size:1.4rem;font-weight:400;letter-spacing:.02em;text-transform:uppercase;font-style:italic;border-bottom:1px solid var(--border);padding-bottom:12px}
+
+/* ── METRICS STRIP ── */
+.metrics-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.metric{background:var(--mbg);border-radius:var(--mr);padding:18px 16px;border:var(--card-border);box-shadow:var(--shadow);text-align:center;transition:transform .2s,box-shadow .2s;border-top:4px solid}
+.metric:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}
+.metric:nth-child(1){border-top-color:var(--pendtx)}
+.metric:nth-child(2){border-top-color:var(--received)}
+.metric:nth-child(3){border-top-color:var(--typed)}
+.metric:nth-child(4){border-top-color:var(--printed)}
+[data-theme="breezy"] .metric{border-top:none;border-left:3px solid;background:#fff;border-left-color:var(--pendtx)}
+[data-theme="breezy"] .metric:nth-child(2){border-left-color:var(--received)}
+[data-theme="breezy"] .metric:nth-child(3){border-left-color:var(--typed)}
+[data-theme="breezy"] .metric:nth-child(4){border-left-color:var(--printed)}
+[data-theme="scholar"] .metric{border-top:none;border-bottom:3px solid var(--border);background:var(--mbg);border-radius:0}
+[data-theme="luxe"] .metric{border-top:none;border:1px solid var(--border);position:relative;overflow:hidden}
+[data-theme="luxe"] .metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+[data-theme="eclipse"] .metric{border-top:none;background:var(--mbg);border:var(--card-border);position:relative;overflow:hidden}
+[data-theme="eclipse"] .metric::after{content:'';position:absolute;inset:0;background:var(--grad);opacity:.05;border-radius:inherit}
+.metric-num{font-family:var(--fd);font-size:2.2rem;font-weight:900;line-height:1}
+[data-theme="luxe"] .metric-num{font-size:2.8rem;font-weight:300;font-style:italic}
+[data-theme="scholar"] .metric-num{font-size:2.4rem;font-weight:900}
+.metric-lbl{font-size:.68rem;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-top:5px}
+[data-theme="luxe"] .metric-lbl,[data-theme="scholar"] .metric-lbl{font-family:var(--fb);font-size:.65rem}
+.metric-sub{font-size:.63rem;color:var(--text2);margin-top:2px;font-weight:500}
+
+/* ── DASHBOARD GRIDS ── */
+.dash-grid{display:grid;grid-template-columns:1fr 310px;gap:20px}
+.dash-main{display:flex;flex-direction:column;gap:18px}
+.dash-side{display:flex;flex-direction:column;gap:16px}
+
+/* Scholar: 3-col newspaper */
+[data-theme="scholar"] .dash-grid{display:grid;grid-template-columns:1fr 1fr 280px;gap:20px;align-items:start}
+[data-theme="scholar"] .dash-main{display:contents}
+[data-theme="scholar"] .dash-side{display:flex;flex-direction:column;gap:16px}
+
+/* Breezy: single column linear */
+[data-theme="breezy"] .dash-grid{display:flex;flex-direction:column;gap:16px}
+[data-theme="breezy"] .dash-side{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* Eclipse: bento grid */
+[data-theme="eclipse"] .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto;gap:20px}
+[data-theme="eclipse"] .dash-main{display:contents}
+[data-theme="eclipse"] .dash-side{display:contents}
+[data-theme="eclipse"] #dashSubjectCard{grid-column:1/3}
+[data-theme="eclipse"] #dashClassCard{grid-column:3/4;grid-row:2/4}
+[data-theme="eclipse"] #dashDonutCard{grid-column:1/2;grid-row:3/4}
+[data-theme="eclipse"] #dashBarCard{grid-column:2/3;grid-row:3/4}
+[data-theme="eclipse"] #dashNextCard{grid-column:1/4}
+
+/* ── SCHOLAR ORNAMENT ── */
+[data-theme="scholar"] .scholar-ornament{text-align:center;margin-bottom:24px;padding:16px;border-bottom:3px double var(--border)}
+[data-theme="scholar"] .scholar-ornament h2{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--primary2);letter-spacing:.04em}
+[data-theme="scholar"] .scholar-ornament p{font-family:var(--fb);font-size:.8rem;color:var(--text2);font-style:italic;margin-top:4px}
+.scholar-ornament{display:none}
+[data-theme="scholar"] .scholar-ornament{display:block}
+
+/* ── PROGRESS BARS ── */
+.prog-item{margin-bottom:12px}
+.prog-hdr{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;margin-bottom:5px}
+[data-theme="scholar"] .prog-hdr,[data-theme="luxe"] .prog-hdr{font-family:var(--fb);font-size:.75rem}
+.prog-bg{background:var(--border);border-radius:999px;height:9px;overflow:hidden}
+[data-theme="breezy"] .prog-bg{height:6px;border-radius:0}
+[data-theme="scholar"] .prog-bg{height:7px;border-radius:0}
+[data-theme="luxe"] .prog-bg{height:4px;border-radius:0;background:var(--border)}
+.prog-fill{height:100%;border-radius:999px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+[data-theme="breezy"] .prog-fill,[data-theme="scholar"] .prog-fill,[data-theme="luxe"] .prog-fill{border-radius:0}
+.prog-legend{display:flex;gap:10px;margin-top:5px;font-size:.63rem;font-weight:700;flex-wrap:wrap}
+.prog-legend span{display:flex;align-items:center;gap:3px;color:var(--text2)}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+[data-theme="scholar"] .legend-dot,[data-theme="luxe"] .legend-dot{border-radius:0}
+
+/* ── CHARTS ── */
+.chart-wrap{position:relative;height:185px}
+[data-theme="breezy"] .chart-wrap{height:160px}
+
+/* ── DONUT LEGEND ── */
+.donut-legend{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.dl-item{display:flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700}
+.dl-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+[data-theme="scholar"] .dl-dot,[data-theme="luxe"] .dl-dot{border-radius:0}
+.dl-count{margin-left:auto;color:var(--text2);font-family:var(--fm);font-size:.7rem}
+
+/* ── NEXT EXAM CARD ── */
+.next-exam-inner{text-align:center;padding:8px 0}
+.nex-subject{font-family:var(--fd);font-size:1.6rem;font-weight:900;line-height:1;margin-bottom:4px}
+[data-theme="luxe"] .nex-subject{font-size:2.2rem;font-weight:300;font-style:italic}
+.nex-date{font-size:.75rem;color:var(--text2);font-weight:700;margin-bottom:14px}
+.nex-countdown{background:var(--grad);color:white;border-radius:var(--r);padding:12px;margin:0 auto;max-width:200px}
+.nex-days{font-family:var(--fd);font-size:1.8rem;font-weight:900;line-height:1}
+[data-theme="luxe"] .nex-days{font-size:2.4rem;font-weight:300}
+.nex-label{font-size:.65rem;font-weight:700;opacity:.85;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.nex-more{font-size:.65rem;color:var(--text2);margin-top:10px;font-weight:700}
+.empty-card{text-align:center;padding:30px 20px;color:var(--text2)}
+.empty-card .ej{font-size:2.2rem;margin-bottom:8px}
+.empty-card p{font-size:.8rem;font-weight:600}
+
+/* ══════════════════════════════════════════
+   CHECKLIST PAGE
+══════════════════════════════════════════ */
+.cl-toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.cl-search{display:flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--btnr);padding:7px 14px;flex:1;min-width:160px;max-width:300px;transition:border-color .2s}
+.cl-search:focus-within{border-color:var(--primary)}
+.cl-search input{border:none;background:transparent;font-family:var(--fb);font-size:.8rem;font-weight:600;color:var(--text);outline:none;width:100%}
+.cl-search input::placeholder{color:var(--text2)}
+.cl-search svg{color:var(--text2);flex-shrink:0}
+.fsel{border:1.5px solid var(--border);border-radius:var(--btnr);padding:7px 14px;font-family:var(--fb);font-size:.78rem;font-weight:700;color:var(--text);background:var(--card);cursor:pointer;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2364748b'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.fsel:focus{border-color:var(--primary)}
+[data-theme="eclipse"] .fsel{background-color:var(--card)}
+
+/* Legend row */
+.legend-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;padding:10px 14px;background:var(--card);border-radius:var(--r);border:var(--card-border);font-size:.7rem;font-weight:700;box-shadow:var(--shadow)}
+.leg-item{display:flex;align-items:center;gap:5px;color:var(--text2)}
+.leg-dot{width:12px;height:12px;border-radius:var(--sr);border:2px solid;flex-shrink:0}
+
+/* Checklist table */
+.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1.5px solid var(--border);box-shadow:var(--shadow)}
+[data-theme="luxe"] .tbl-wrap,[data-theme="scholar"] .tbl-wrap{box-shadow:none}
+table{width:100%;border-collapse:collapse;min-width:680px}
+thead th{background:var(--thd);color:white;padding:10px 10px;font-size:.68rem;font-weight:800;text-align:center;white-space:nowrap;position:sticky;top:0;z-index:5;letter-spacing:.04em}
+[data-theme="scholar"] thead th,[data-theme="luxe"] thead th{font-family:var(--fb);letter-spacing:.08em;text-transform:uppercase}
+thead th:first-child{text-align:left;min-width:88px}
+thead th:last-child{min-width:80px}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+tbody tr:hover{background:rgba(var(--primary),.04)}
+[data-theme="eclipse"] tbody tr:hover{background:rgba(56,189,248,.05)}
+tbody tr:last-child{border-bottom:none}
+td{padding:8px 8px;font-size:.78rem;font-weight:600;text-align:center;vertical-align:middle}
+td:first-child{text-align:left;font-weight:800}
+td:last-child{width:90px}
+.cls-badge{display:inline-block;background:var(--grad);color:white;border-radius:var(--rsm);padding:3px 10px;font-size:.7rem;font-weight:800;letter-spacing:.02em}
+.cls-num{font-size:.62rem;color:var(--text2);font-weight:500;margin-top:2px}
+
+/* Status cell */
+.sc{cursor:pointer;border-radius:var(--rsm);padding:3px 5px;transition:background .12s;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:42px;min-height:42px;justify-content:center}
+.sc:hover{background:var(--border)}
+.si{width:26px;height:26px;border-radius:var(--sr);display:flex;align-items:center;justify-content:center;font-size:.8rem;border:2.5px solid;transition:all .2s;margin:0 auto}
+.st{font-size:.56rem;font-weight:800;line-height:1;text-align:center}
+.s0 .si{background:var(--pending);border-color:var(--pendtx);color:var(--pendtx)}.s0 .st{color:var(--pendtx)}
+.s1 .si{background:var(--rcvl);border-color:var(--received);color:var(--received)}.s1 .st{color:var(--received)}
+.s2 .si{background:var(--typl);border-color:var(--typed);color:var(--typed)}.s2 .st{color:var(--typed)}
+.s3 .si{background:var(--prtl);border-color:var(--printed);color:var(--printed)}.s3 .st{color:var(--printed)}
+.na-cell{color:var(--border);font-size:.68rem;font-weight:700}
+.row-actions{display:flex;gap:4px;justify-content:center}
+
+/* Row background stripes */
+.row-n{background:rgba(139,92,246,.03)}
+.row-k{background:rgba(245,158,11,.03)}
+.row-b{}
+[data-theme="eclipse"] .row-n{background:rgba(167,139,250,.05)}
+[data-theme="eclipse"] .row-k{background:rgba(245,158,11,.05)}
+
+/* Class jumper pills */
+.class-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.cpill{border:1.5px solid var(--border);background:var(--card);border-radius:var(--btnr);padding:4px 12px;font-size:.7rem;font-weight:800;cursor:pointer;transition:all .15s;color:var(--text2)}
+.cpill:hover,.cpill.ac{background:var(--grad);color:white;border-color:transparent}
+
+/* ══════════════════════════════════════════
+   TIMETABLE PAGE
+══════════════════════════════════════════ */
+.cal-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:22px;margin-bottom:22px;border:var(--card-border)}
+.cal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.cal-title{font-family:var(--fd);font-size:1.1rem;font-weight:800}
+[data-theme="luxe"] .cal-title{font-size:1.6rem;font-weight:300;font-style:italic}
+.cal-nav{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rsm);width:34px;height:34px;font-size:1rem;cursor:pointer;font-weight:900;transition:background .15s;color:var(--text)}
+.cal-nav:hover{background:var(--border)}
+.cal-dows{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
+.cal-dow{text-align:center;font-size:.62rem;font-weight:800;color:var(--text2);padding:4px 0;text-transform:uppercase;letter-spacing:.04em}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cday{aspect-ratio:1;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;position:relative;user-select:none}
+.cday:hover{background:var(--bg)}
+[data-theme="breezy"] .cday:hover{outline:1.5px solid var(--primary)}
+.cday.other{color:var(--border)}
+.cday.today{background:var(--typl);color:var(--typed);font-weight:900}
+[data-theme="eclipse"] .cday.today{background:rgba(96,165,250,.15);color:#60a5fa}
+.cday.exam-day{background:var(--grad);color:white;font-weight:900;box-shadow:0 2px 8px rgba(var(--primary),.3)}
+.cday.exam-day::after{content:'•';position:absolute;bottom:2px;font-size:.5rem;opacity:.7}
+.cday.selected{outline:2px solid var(--primary);outline-offset:1px}
+
+.tt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.tt-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s,box-shadow .2s;border:var(--card-border)}
+.tt-card:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
+.tt-head{padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;border-left:4px solid}
+.tt-subj{font-family:var(--fd);font-size:1rem;font-weight:800}
+[data-theme="luxe"] .tt-subj{font-size:1.3rem;font-weight:300;font-style:italic}
+.tt-body{padding:14px 16px}
+.tt-date-lbl{font-size:.7rem;color:var(--text2);font-weight:700;margin-bottom:4px}
+.tt-time{font-size:1.05rem;font-weight:800;margin-bottom:8px}
+[data-theme="luxe"] .tt-time{font-size:1.4rem;font-weight:300;letter-spacing:-.01em}
+.tt-notes{font-size:.72rem;color:var(--text2);margin-bottom:8px;font-style:italic;padding:6px 8px;background:var(--bg);border-radius:var(--rsm);border-left:2px solid var(--border)}
+.tt-classes{display:flex;flex-wrap:wrap;gap:4px}
+.tt-cls-tag{background:var(--bg);border-radius:var(--rsm);padding:2px 8px;font-size:.63rem;font-weight:800;color:var(--primary);border:1px solid var(--border)}
+.tt-chip{border-radius:var(--btnr);padding:4px 10px;font-size:.68rem;font-weight:800;white-space:nowrap}
+.chip-soon{background:var(--grad);color:white}
+.chip-today{background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;animation:pulse-chip 1.5s infinite}
+.chip-past{background:var(--pending);color:var(--text2)}
+@keyframes pulse-chip{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* ══════════════════════════════════════════
+   MANAGE PAGE
+══════════════════════════════════════════ */
+.manage-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.manage-list{list-style:none;display:flex;flex-direction:column;gap:7px;max-height:320px;overflow-y:auto;padding-right:4px}
+.manage-list::-webkit-scrollbar{width:4px}.manage-list::-webkit-scrollbar-track{background:transparent}.manage-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.m-item{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:var(--rsm);padding:10px 14px;font-weight:700;font-size:.82rem;gap:8px;border:var(--card-border)}
+.m-item-acts{display:flex;gap:5px;flex-shrink:0}
+.inline-form{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ainput{border:1.5px solid var(--border);border-radius:var(--rsm);padding:8px 12px;font-family:var(--fb);font-size:.8rem;font-weight:600;color:var(--text);background:var(--card);outline:none;transition:border-color .2s;flex:1;min-width:100px}
+.ainput:focus{border-color:var(--primary)}
+[data-theme="eclipse"] .ainput{background:var(--mbg)}
+
+/* Assignment grid */
+.assign-wrap{overflow-x:auto}
+.assign-tbl{border-collapse:collapse;min-width:500px;width:100%}
+.assign-tbl th{padding:7px 10px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--thd);color:white;text-align:center;white-space:nowrap;writing-mode:vertical-rl;transform:rotate(180deg);height:64px}
+.assign-tbl th:first-child{writing-mode:horizontal-tb;transform:none;text-align:left;height:auto;min-width:80px}
+.assign-tbl td{padding:6px 8px;text-align:center;border-bottom:1px solid var(--border)}
+.assign-tbl td:first-child{text-align:left;font-weight:800;font-size:.8rem;padding-left:12px}
+.atog{width:26px;height:26px;border-radius:var(--sr);border:2px solid var(--border);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .15s;background:var(--card)}
+.atog.on{background:var(--prtl);border-color:var(--printed);color:var(--printed)}
+.atog:hover{transform:scale(1.15)}
+
+/* ══════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════ */
+.btn{border:none;border-radius:var(--btnr);padding:8px 18px;font-family:var(--fb);font-size:.78rem;font-weight:800;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;letter-spacing:.02em}
+.btn-primary{background:var(--grad);color:white}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(var(--primary),.35)}
+[data-theme="breezy"] .btn-primary:hover{box-shadow:0 4px 14px rgba(0,85,212,.3)}
+.btn-ghost{background:var(--bg);color:var(--text2);border:1.5px solid var(--border)}
+.btn-ghost:hover{background:var(--border);color:var(--text)}
+[data-theme="eclipse"] .btn-ghost{background:rgba(30,41,59,.5)}
+.btn-danger{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
+.btn-danger:hover{background:#ef4444;color:white}
+.btn-sm{padding:5px 12px;font-size:.72rem}
+.btn-xs{padding:3px 8px;font-size:.65rem}
+
+/* ══════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:var(--r);padding:28px;max-width:520px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:pop .22s cubic-bezier(.34,1.56,.64,1);max-height:90dvh;overflow-y:auto;border:var(--card-border)}
+[data-theme="eclipse"] .modal{background:#1e293b}
+@keyframes pop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-ttl{font-family:var(--fd);font-size:1.15rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+[data-theme="luxe"] .modal-ttl{font-size:1.8rem;font-weight:300;font-style:italic}
+.modal-acts{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+.fg{margin-bottom:14px}
+.flbl{font-size:.7rem;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;display:block;font-family:var(--fb)}
+.finput{border:1.5px solid var(--border);border-radius:var(--rsm);padding:9px 14px;font-family:var(--fb);font-size:.85rem;font-weight:600;color:var(--text);background:var(--card);outline:none;transition:border-color .2s;width:100%}
+.finput:focus{border-color:var(--primary)}
+[data-theme="eclipse"] .finput{background:rgba(15,23,42,.5)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.frow{grid-template-columns:1fr}}
+
+/* Subject picker (TT modal) */
+.sub-picker{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:var(--bg);border-radius:var(--rsm);border:1.5px solid var(--border);max-height:160px;overflow-y:auto}
+.sp-tag{border:1.5px solid var(--border);background:var(--card);border-radius:var(--btnr);padding:4px 11px;font-size:.72rem;font-weight:800;cursor:pointer;transition:all .15s;color:var(--text2);user-select:none}
+.sp-tag.sel{background:var(--grad);color:white;border-color:transparent}
+
+/* Class picker (TT modal) */
+.cls-picker{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:var(--bg);border-radius:var(--rsm);border:1.5px solid var(--border)}
+.cp-tag{border:1.5px solid var(--border);background:var(--card);border-radius:var(--btnr);padding:4px 11px;font-size:.72rem;font-weight:800;cursor:pointer;transition:all .15s;color:var(--text2);user-select:none}
+.cp-tag.sel{background:var(--grad);color:white;border-color:transparent}
+.picker-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.picker-lbl{font-size:.7rem;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em}
+
+/* ══════════════════════════════════════════
+   THEME PICKER MODAL
+══════════════════════════════════════════ */
+.themes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:4px}
+.theme-card{border:2.5px solid var(--border);border-radius:var(--r);padding:0;cursor:pointer;transition:all .2s;overflow:hidden;position:relative}
+.theme-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.theme-card.sel{border-color:var(--primary);box-shadow:0 0 0 3px rgba(var(--primary),.2)}
+.theme-preview{height:90px;display:flex;flex-direction:column;gap:6px;padding:12px}
+.tp-bar{height:8px;border-radius:4px}
+.tp-card{height:20px;border-radius:4px;margin-top:4px;display:flex;gap:4px;padding:4px}
+.tp-dot{width:8px;height:8px;border-radius:50%;margin:auto 0}
+.theme-name{padding:10px 14px;font-size:.78rem;font-weight:800;border-top:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:space-between}
+.theme-check{color:var(--primary);font-size:1rem}
+
+/* ══════════════════════════════════════════
+   SETUP WIZARD
+══════════════════════════════════════════ */
+.wiz-overlay{position:fixed;inset:0;background:rgba(10,15,30,.7);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.wiz-overlay.open{display:flex}
+.wiz-modal{background:var(--card);border-radius:calc(var(--r) + 4px);width:100%;max-width:560px;box-shadow:0 32px 80px rgba(0,0,0,.3);overflow:hidden;animation:pop .3s cubic-bezier(.34,1.56,.64,1);max-height:90dvh;display:flex;flex-direction:column;border:var(--card-border)}
+[data-theme="eclipse"] .wiz-modal{background:#1e293b}
+.wiz-head{background:var(--grad);padding:28px 28px 24px;color:white;position:relative;overflow:hidden;flex-shrink:0}
+.wiz-head::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);clip-path:circle(60% at 110% -10%)}
+.wiz-emoji{font-size:2.5rem;margin-bottom:8px;position:relative;z-index:1}
+.wiz-head h2{font-family:var(--fd);font-size:1.5rem;font-weight:900;position:relative;z-index:1;line-height:1.2}
+[data-theme="luxe"] .wiz-head h2{font-size:2.2rem;font-weight:300;font-style:italic}
+.wiz-head p{font-size:.8rem;opacity:.85;margin-top:4px;position:relative;z-index:1;font-weight:600}
+/* Progress dots */
+.wiz-dots{display:flex;gap:6px;position:absolute;top:16px;right:20px;z-index:1}
+.wdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .3s}
+.wdot.on{background:white;width:20px;border-radius:4px}
+.wiz-body{padding:24px 28px;overflow-y:auto;flex:1}
+.wiz-step-content{display:none}
+.wiz-step-content.active{display:block}
+.wiz-foot{padding:16px 28px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;gap:10px}
+.wiz-step-lbl{font-size:.7rem;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+
+/* Progress step (quick-setup in wizard) */
+.ws-subj-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.ws-subj-row:last-child{border-bottom:none}
+.ws-subj-name{font-weight:800;font-size:.85rem;min-width:90px;flex-shrink:0}
+.ws-status-btns{display:flex;gap:4px;flex-wrap:wrap}
+.wsb{border:1.5px solid var(--border);background:var(--bg);border-radius:var(--btnr);padding:4px 10px;font-size:.7rem;font-weight:700;cursor:pointer;transition:all .15s;color:var(--text2)}
+.wsb.s0.active{border-color:var(--pendtx);background:var(--pending);color:var(--pendtx)}
+.wsb.s1.active{border-color:var(--received);background:var(--rcvl);color:var(--received)}
+.wsb.s2.active{border-color:var(--typed);background:var(--typl);color:var(--typed)}
+.wsb.s3.active{border-color:var(--printed);background:var(--prtl);color:var(--printed)}
+
+/* Theme mini-cards in wizard */
+.wiz-themes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.wiz-theme-card{cursor:pointer;border-radius:var(--rsm);overflow:hidden;border:2.5px solid var(--border);transition:all .2s;position:relative}
+.wiz-theme-card.sel{border-color:var(--primary)}
+.wiz-theme-card.sel::after{content:'✓';position:absolute;top:4px;right:4px;background:var(--primary);color:white;width:16px;height:16px;border-radius:50%;font-size:.65rem;font-weight:900;display:flex;align-items:center;justify-content:center}
+.wiz-tp{height:50px}
+.wiz-tname{font-size:.6rem;font-weight:800;text-align:center;padding:4px 2px;background:var(--bg);color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+
+/* ══════════════════════════════════════════
+   TOAST & CONTEXT MENU
+══════════════════════════════════════════ */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:#1e293b;color:white;padding:12px 20px;border-radius:var(--btnr);font-family:var(--fb);font-weight:700;font-size:.82rem;z-index:400;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;align-items:center;gap:12px;max-width:calc(100vw - 40px)}
+[data-theme="eclipse"] .toast{background:#0f172a;border:1px solid rgba(148,163,184,.2)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast-undo{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:3px 12px;font-size:.72rem;font-weight:800;cursor:pointer;color:white;transition:background .15s;white-space:nowrap}
+.toast-undo:hover{background:rgba(255,255,255,.3)}
+
+.ctx-menu{position:fixed;background:var(--card);border:1.5px solid var(--border);border-radius:var(--rsm);box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:300;overflow:hidden;min-width:160px;animation:pop .15s ease;display:none}
+[data-theme="eclipse"] .ctx-menu{background:#1e293b}
+.ctx-menu.open{display:block}
+.ctx-item{padding:9px 16px;font-size:.78rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .1s;font-family:var(--fb)}
+.ctx-item:hover{background:var(--bg)}
+.ctx-sep{height:1px;background:var(--border);margin:3px 0}
+
+/* ══════════════════════════════════════════
+   KEYBOARD SHORTCUTS MODAL
+══════════════════════════════════════════ */
+.shortcuts-grid{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;align-items:center}
+.kbd{display:inline-flex;align-items:center;justify-content:center;background:var(--bg);border:1.5px solid var(--border);border-radius:5px;padding:3px 8px;font-family:var(--fm);font-size:.75rem;font-weight:700;min-width:32px;box-shadow:0 2px 0 var(--border)}
+.kbd-desc{font-size:.8rem;font-weight:600;color:var(--text2)}
+
+/* ══════════════════════════════════════════
+   MOBILE NAV
+══════════════════════════════════════════ */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1.5px solid var(--border);z-index:100;padding:6px 0 env(safe-area-inset-bottom,6px);box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+[data-theme="eclipse"] .mob-nav{background:#1e293b}
+.mob-nav-in{display:flex;justify-content:space-around}
+.mnav{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:none;padding:6px 14px;font-size:.6rem;font-weight:800;color:var(--text2);cursor:pointer;border-radius:var(--rsm);transition:color .15s;font-family:var(--fb)}
+.mnav .mi{font-size:1.35rem}
+.mnav.active{color:var(--primary)}
+.save-ind{font-size:.6rem;color:var(--text2);font-weight:600;display:flex;align-items:center;gap:4px;padding:4px 0}
+.save-dot{width:6px;height:6px;border-radius:50%;background:var(--printed);flex-shrink:0}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:900px){
+  .dash-grid,[data-theme="scholar"] .dash-grid,[data-theme="eclipse"] .dash-grid{display:flex;flex-direction:column}
+  [data-theme="eclipse"] #dashSubjectCard,[data-theme="eclipse"] #dashClassCard,[data-theme="eclipse"] #dashDonutCard,[data-theme="eclipse"] #dashBarCard,[data-theme="eclipse"] #dashNextCard{grid-column:auto;grid-row:auto}
+  [data-theme="scholar"] .dash-main{display:flex;flex-direction:column}
+  .dash-side{display:grid;grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+  .metrics-strip{grid-template-columns:repeat(2,1fr)}
+  .nav-bar{display:none}
+  .mob-nav{display:block}
+  .manage-grid{grid-template-columns:1fr}
+  .dash-side{grid-template-columns:1fr}
+  .main-layout{padding:14px 12px 90px}
+  .card{padding:14px}
+  .wiz-themes{grid-template-columns:repeat(3,1fr)}
+  .themes-grid{grid-template-columns:repeat(2,1fr)}
+  .countdown-chip{display:none}
+}
+@media(max-width:420px){
+  .metrics-strip{grid-template-columns:repeat(2,1fr);gap:10px}
+  .wiz-themes{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+  .header,.mob-nav,.toast,.overlay,.wiz-overlay,.ctx-menu,.btn,.cl-toolbar,.class-pills,.legend-row{display:none!important}
+  .page{display:block!important}
+  body{background:white}
+  .card{box-shadow:none;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SETUP WIZARD ═══ -->
+<div class="wiz-overlay" id="wizard">
+<div class="wiz-modal">
+  <div class="wiz-head" id="wizHead">
+    <div class="wiz-dots" id="wizDots"></div>
+    <div class="wiz-emoji" id="wizEmoji">🎓</div>
+    <h2 id="wizTitle">Welcome!</h2>
+    <p id="wizSub">Let's set up your exam tracker in under a minute.</p>
+  </div>
+  <div class="wiz-body">
+    <!-- Step 1: Info -->
+    <div class="wiz-step-content active" id="ws1">
+      <div class="fg"><label class="flbl">School Name</label><input class="finput" id="wsSchool" value="St. Anne Catholic School"></div>
+      <div class="fg"><label class="flbl">Your Name / Role</label><input class="finput" id="wsName" placeholder="e.g. Mr. Mensah — Exam Coordinator"></div>
+      <div class="fg"><label class="flbl">Term / Exam Period</label><input class="finput" id="wsTerm" placeholder="e.g. End of Term 2, 2025"></div>
+    </div>
+    <!-- Step 2: Dates -->
+    <div class="wiz-step-content" id="ws2">
+      <div class="fg"><label class="flbl">📅 Exam Start Date</label><input type="date" class="finput" id="wsDate"></div>
+      <div class="fg" style="margin-top:8px">
+        <label class="flbl">How many days before exams do you start printing?</label>
+        <select class="finput" id="wsDaysWarning">
+          <option value="3">3 days before</option><option value="5">5 days before</option>
+          <option value="7" selected>1 week before</option><option value="14">2 weeks before</option>
+        </select>
+      </div>
+    </div>
+    <!-- Step 3: Progress -->
+    <div class="wiz-step-content" id="ws3">
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:16px;font-weight:600;line-height:1.5">Where are you right now in the printing process? Set the status for each subject — this applies across all classes. Fine-tune individually in the Checklist later.</p>
+      <div style="background:var(--bg);border-radius:var(--rsm);border:1.5px solid var(--border);overflow:hidden">
+        <div style="display:flex;justify-content:flex-end;padding:8px 12px;gap:6px;border-bottom:1px solid var(--border);flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="wsSetAll(0)">All Pending</button>
+          <button class="btn btn-sm" style="background:var(--rcvl);color:var(--received)" onclick="wsSetAll(1)">All Received</button>
+          <button class="btn btn-sm" style="background:var(--typl);color:var(--typed)" onclick="wsSetAll(2)">All Typed</button>
+          <button class="btn btn-sm" style="background:var(--prtl);color:var(--printed)" onclick="wsSetAll(3)">All Printed</button>
+        </div>
+        <div id="wsProgressRows" style="padding:8px 12px;max-height:280px;overflow-y:auto"></div>
+      </div>
+    </div>
+    <!-- Step 4: Theme -->
+    <div class="wiz-step-content" id="ws4">
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:14px;font-weight:600">Pick a visual style. You can change it anytime from the palette button.</p>
+      <div class="wiz-themes" id="wizThemePicker"></div>
+    </div>
+    <!-- Step 5: Done -->
+    <div class="wiz-step-content" id="ws5">
+      <div style="text-align:center;padding:10px 0">
+        <div style="font-size:3.5rem;margin-bottom:12px">🎉</div>
+        <div style="font-family:var(--fd);font-size:1.4rem;font-weight:800;margin-bottom:8px" id="wsDoneTitle">You're all set!</div>
+        <div style="font-size:.85rem;color:var(--text2);font-weight:600;line-height:1.6" id="wsDoneSub"></div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;padding:16px;background:var(--bg);border-radius:var(--rsm);border:1.5px solid var(--border);text-align:left" id="wsDoneSummary"></div>
+      </div>
+    </div>
+  </div>
+  <div class="wiz-foot">
+    <div class="wiz-step-lbl" id="wizStepLbl">Step 1 of 5</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" id="wPrev" onclick="wizPrev()">← Back</button>
+      <button class="btn btn-primary" id="wNext" onclick="wizNext()">Next →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <h1 id="appTitle">📋 Exam Print Tracker</h1>
+      <p id="appSubtitle">St. Anne Catholic School · Elmina</p>
+    </div>
+    <div class="header-right">
+      <nav class="nav-bar">
+        <button class="nav-btn active" onclick="showPage('dashboard')">📊 Dashboard</button>
+        <button class="nav-btn" onclick="showPage('checklist')">✅ Checklist</button>
+        <button class="nav-btn" onclick="showPage('timetable')">📅 Timetable</button>
+        <button class="nav-btn" onclick="showPage('manage')">⚙️ Manage</button>
+      </nav>
+      <div class="hdr-actions">
+        <div class="countdown-chip" id="cdownChip" onclick="showPage('timetable')">
+          <small>Exams in</small>
+          <span id="cdownVal">—</span>
+        </div>
+        <button class="theme-btn" onclick="openThemeModal()" title="Change theme">🎨</button>
+        <button class="theme-btn" onclick="openShortcutsModal()" title="Keyboard shortcuts (?)">⌨️</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MOBILE NAV ═══ -->
+<nav class="mob-nav">
+  <div class="mob-nav-in">
+    <button class="mnav active" onclick="showPage('dashboard')"><span class="mi">📊</span>Dashboard</button>
+    <button class="mnav" onclick="showPage('checklist')"><span class="mi">✅</span>Checklist</button>
+    <button class="mnav" onclick="showPage('timetable')"><span class="mi">📅</span>Timetable</button>
+    <button class="mnav" onclick="showPage('manage')"><span class="mi">⚙️</span>Manage</button>
+  </div>
+</nav>
+
+<div class="main-layout">
+
+<!-- ══════════ DASHBOARD PAGE ══════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="scholar-ornament" id="scholarOrnament">
+    <h2 id="scholarTitle">Examination Print Gazette</h2>
+    <p id="scholarSub">St. Anne Catholic School · Progress Report</p>
+  </div>
+  <div class="metrics-strip" id="metricsStrip"></div>
+  <div class="save-ind" style="margin-bottom:10px;justify-content:flex-end">
+    <div class="save-dot"></div>
+    <span id="saveTime">Saved just now</span>
+  </div>
+  <div class="dash-grid" id="dashGrid">
+    <div class="dash-main">
+      <div class="card" id="dashSubjectCard">
+        <div class="card-ttl"><span>📚</span> Progress by Subject</div>
+        <div id="subjProgList"></div>
+      </div>
+      <div class="card" id="dashClassCard">
+        <div class="card-ttl"><span>🏫</span> Progress by Class</div>
+        <div id="classProgList"></div>
+      </div>
+    </div>
+    <div class="dash-side">
+      <div class="card" id="dashDonutCard">
+        <div class="card-ttl" style="font-size:.85rem"><span>🎯</span> Overall Status</div>
+        <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+        <div class="donut-legend" id="donutLeg"></div>
+      </div>
+      <div class="card" id="dashBarCard">
+        <div class="card-ttl" style="font-size:.85rem"><span>📈</span> Printed per Class</div>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="card" id="dashNextCard">
+        <div class="card-ttl" style="font-size:.85rem"><span>⏰</span> Next Exam</div>
+        <div id="nextExamInfo"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CHECKLIST PAGE ══════════ -->
+<div class="page" id="page-checklist">
+  <div class="sec-hdr">
+    <div class="sec-title">✅ Exam Checklist</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm" onclick="printChecklist()">🖨️ Print</button>
+      <button class="btn btn-ghost btn-sm" onclick="openSetupWizard(true)">🧙 Re-Setup</button>
+      <button class="btn btn-danger btn-sm" onclick="resetAll()">↺ Reset All</button>
+    </div>
+  </div>
+
+  <div class="class-pills" id="classPills"></div>
+
+  <div class="legend-row">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--pending);border-color:var(--pendtx)"></div> Pending</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--rcvl);border-color:var(--received)"></div> Received</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--typl);border-color:var(--typed)"></div> Typed</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--prtl);border-color:var(--printed)"></div> Printed ✓</div>
+    <div class="leg-item" style="color:var(--text2);font-size:.65rem">Click cell to cycle · Right-click for options</div>
+  </div>
+
+  <div class="cl-toolbar">
+    <div class="cl-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search class or subject…" oninput="renderChecklist()">
+    </div>
+    <select class="fsel" id="filterClass" onchange="renderChecklist()">
+      <option value="all">All Classes</option>
+    </select>
+    <select class="fsel" id="filterStatus" onchange="renderChecklist()">
+      <option value="all">All Statuses</option>
+      <option value="0">⬜ Pending</option>
+      <option value="1">🟡 Received</option>
+      <option value="2">🔵 Typed</option>
+      <option value="3">🟢 Printed</option>
+    </select>
+    <button class="btn btn-primary btn-sm" onclick="markClassDone()">✅ Mark Class Done</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table id="clTable">
+      <thead id="clHead"></thead>
+      <tbody id="clBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════ TIMETABLE PAGE ══════════ -->
+<div class="page" id="page-timetable">
+  <div class="sec-hdr">
+    <div class="sec-title">📅 Exam Timetable</div>
+    <button class="btn btn-primary btn-sm" onclick="openTTModal()">＋ Add Exam</button>
+  </div>
+  <div class="cal-card">
+    <div class="cal-hdr">
+      <button class="cal-nav" onclick="calPrev()">‹</button>
+      <div class="cal-title" id="calTitle"></div>
+      <button class="cal-nav" onclick="calNext()">›</button>
+    </div>
+    <div class="cal-dows" id="calDows"></div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+  <div id="ttDateFilter" style="display:none;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"></div>
+  <div class="tt-grid" id="ttGrid"></div>
+</div>
+
+<!-- ══════════ MANAGE PAGE ══════════ -->
+<div class="page" id="page-manage">
+  <div class="sec-hdr">
+    <div class="sec-title">⚙️ Manage</div>
+    <button class="btn btn-ghost btn-sm" onclick="openSetupWizard(true)">🧙 Re-run Setup Wizard</button>
+  </div>
+  <div class="manage-grid">
+    <div class="card">
+      <div class="card-ttl"><span>🏫</span> Classes</div>
+      <ul class="manage-list" id="mClsList"></ul>
+      <div class="inline-form" style="margin-top:12px">
+        <input type="text" class="ainput" id="newClsName" placeholder="Class name (e.g. B10)">
+        <input type="number" class="ainput" id="newClsNum" placeholder="# Students" style="max-width:110px">
+        <button class="btn btn-primary btn-sm" onclick="addClass()">Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-ttl"><span>📚</span> Subjects</div>
+      <ul class="manage-list" id="mSubList"></ul>
+      <div class="inline-form" style="margin-top:12px">
+        <input type="text" class="ainput" id="newSubName" placeholder="Subject name">
+        <button class="btn btn-primary btn-sm" onclick="addSubject()">Add</button>
+      </div>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-ttl"><span>🔗</span> Subject Assignments per Class</div>
+      <p style="font-size:.75rem;color:var(--text2);margin-bottom:12px;font-weight:600">Click a checkbox to toggle whether a class takes that exam</p>
+      <div class="assign-wrap"><table class="assign-tbl" id="assignTbl"></table></div>
+    </div>
+  </div>
+</div>
+</div><!-- /main-layout -->
+
+<!-- ═══ TIMETABLE MODAL ═══ -->
+<div class="overlay" id="ttOverlay">
+<div class="modal">
+  <div class="modal-ttl">📅 <span id="ttModalTitle">Schedule Exam</span></div>
+  <div class="fg">
+    <div class="picker-hdr">
+      <label class="flbl" style="margin:0">Subjects</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--primary)">
+        <input type="checkbox" id="ttSelectAll" onchange="toggleSelectAllSubjects(this.checked)" style="accent-color:var(--primary)"> Select All
+      </label>
+    </div>
+    <div class="sub-picker" id="ttSubPicker"></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="flbl">Date</label><input type="date" class="finput" id="ttDate"></div>
+    <div class="fg"><label class="flbl">Time</label><input type="time" class="finput" id="ttTime" value="08:00"></div>
+  </div>
+  <div class="fg"><label class="flbl">Duration (minutes)</label><input type="number" class="finput" id="ttDur" value="60"></div>
+  <div class="fg">
+    <div class="picker-hdr">
+      <label class="flbl" style="margin:0">Classes</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--primary)">
+        <input type="checkbox" id="ttSelectAllCls" onchange="toggleSelectAllClasses(this.checked)" style="accent-color:var(--primary)"> Select All
+      </label>
+    </div>
+    <div class="cls-picker" id="ttClsPicker"></div>
+  </div>
+  <div class="fg"><label class="flbl">Notes (optional)</label><input type="text" class="finput" id="ttNotes" placeholder="e.g. Bring mark schemes, check duplicator"></div>
+  <div class="modal-acts">
+    <button class="btn btn-ghost" onclick="closeTTModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveTT()">💾 Save Exam</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ EDIT MODAL ═══ -->
+<div class="overlay" id="editOverlay">
+<div class="modal">
+  <div class="modal-ttl" id="editModalTitle">✏️ Edit</div>
+  <div class="fg"><label class="flbl">Name</label><input type="text" class="finput" id="editName"></div>
+  <div class="fg" id="editNumFg"><label class="flbl">Number of Students</label><input type="number" class="finput" id="editNum"></div>
+  <div class="modal-acts">
+    <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveEdit()">Save</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ THEME PICKER MODAL ═══ -->
+<div class="overlay" id="themeOverlay">
+<div class="modal">
+  <div class="modal-ttl">🎨 Choose Theme</div>
+  <div class="themes-grid" id="themeGrid"></div>
+  <div class="modal-acts"><button class="btn btn-ghost" onclick="closeThemeModal()">Done</button></div>
+</div>
+</div>
+
+<!-- ═══ SHORTCUTS MODAL ═══ -->
+<div class="overlay" id="shortcutsOverlay">
+<div class="modal">
+  <div class="modal-ttl">⌨️ Keyboard Shortcuts</div>
+  <div class="shortcuts-grid">
+    <kbd class="kbd">D</kbd><span class="kbd-desc">Go to Dashboard</span>
+    <kbd class="kbd">C</kbd><span class="kbd-desc">Go to Checklist</span>
+    <kbd class="kbd">T</kbd><span class="kbd-desc">Go to Timetable</span>
+    <kbd class="kbd">M</kbd><span class="kbd-desc">Go to Manage</span>
+    <kbd class="kbd">?</kbd><span class="kbd-desc">Show this help</span>
+    <kbd class="kbd">P</kbd><span class="kbd-desc">Change theme (palette)</span>
+    <kbd class="kbd">Ctrl+Z</kbd><span class="kbd-desc">Undo last status change</span>
+    <kbd class="kbd">Ctrl+P</kbd><span class="kbd-desc">Print checklist</span>
+    <kbd class="kbd">Esc</kbd><span class="kbd-desc">Close modals</span>
+    <kbd class="kbd">↑ ↓</kbd><span class="kbd-desc">Navigate class pills</span>
+  </div>
+  <div class="modal-acts"><button class="btn btn-primary" onclick="closeShortcutsModal()">Got it!</button></div>
+</div>
+</div>
+
+<!-- ═══ CONTEXT MENU ═══ -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-item" onclick="ctxSetStatus(0)"><span>⬜</span> Mark Pending</div>
+  <div class="ctx-item" onclick="ctxSetStatus(1)"><span>📬</span> Mark Received</div>
+  <div class="ctx-item" onclick="ctxSetStatus(2)"><span>⌨️</span> Mark Typed</div>
+  <div class="ctx-item" onclick="ctxSetStatus(3)"><span>✅</span> Mark Printed</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="ctxMarkRow(3)" style="color:var(--printed)">✅ Print entire class row</div>
+  <div class="ctx-item" onclick="ctxMarkCol(3)" style="color:var(--typed)">📄 Print all classes (this subject)</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA & DEFAULTS
+// ═══════════════════════════════════════════════
+const DEF_CLASSES = [
+  {id:'n2',name:'N-2',students:30},{id:'kg1',name:'KG-1',students:33},{id:'kg2',name:'KG-2',students:38},
+  {id:'b1',name:'B1',students:38},{id:'b2',name:'B2',students:0},{id:'b3',name:'B3',students:0},
+  {id:'b4',name:'B4',students:48},{id:'b5',name:'B5',students:56},{id:'b6',name:'B6',students:45},
+  {id:'b7',name:'B7',students:43},{id:'b8',name:'B8',students:43},{id:'b9',name:'B9',students:40}
+];
+const DEF_SUBJECTS = ['English','Maths','Science','Social','Fante','French','C.Arts','History','OWOP','RME','ICT','C.Tech'];
+const DEF_ASSIGN = {
+  n2:['English','Maths','OWOP','RME','C.Arts'],
+  kg1:['English','Maths','OWOP','RME','C.Arts'],
+  kg2:['English','Maths','Science','Social','RME','C.Arts'],
+  b1:['English','Maths','Science','Social','Fante','RME','C.Arts','OWOP'],
+  b2:['English','Maths','Science','Social','Fante','RME','C.Arts','OWOP'],
+  b3:['English','Maths','Science','Social','Fante','RME','C.Arts','OWOP'],
+  b4:['English','Maths','Science','Social','Fante','French','C.Arts','History','OWOP','RME','ICT','C.Tech'],
+  b5:['English','Maths','Science','Social','Fante','French','C.Arts','History','OWOP','RME','ICT','C.Tech'],
+  b6:['English','Maths','Science','Social','Fante','French','C.Arts','History','OWOP','RME','ICT','C.Tech'],
+  b7:['English','Maths','Science','Social','Fante','French','C.Arts','History','OWOP','RME','ICT','C.Tech'],
+  b8:['English','Maths','Science','Social','Fante','French','C.Arts','History','OWOP','RME','ICT','C.Tech'],
+  b9:['English','Maths','Science','Social','Fante','French','C.Arts','History','OWOP','RME','ICT','C.Tech']
+};
+
+const THEMES = [
+  {id:'vivid',name:'Vivid',colors:['#667eea','#764ba2','#f0f4ff','#10b981']},
+  {id:'breezy',name:'Breezy',colors:['#0055d4','#e4e9f0','#fafbfc','#0055d4']},
+  {id:'scholar',name:'Scholar',colors:['#1d3e2c','#c9a84c','#f3ede0','#c9a84c']},
+  {id:'luxe',name:'Luxé',colors:['#0a1525','#c9a84c','#f7f4ee','#c9a84c']},
+  {id:'eclipse',name:'Eclipse',colors:['#38bdf8','#a78bfa','#0f172a','#34d399']}
+];
+
+const SL = ['Pending','Received','Typed','Printed'];
+const SI = ['○','📬','⌨️','✅'];
+const SA = ['—','Rcvd','Typed','✓'];
+const SUB_COLORS = ['#667eea','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#06b6d4','#84cc16','#f97316','#14b8a6','#a855f7'];
+
+function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let classes=ld('ept_cls',DEF_CLASSES);
+let subjects=ld('ept_sub',DEF_SUBJECTS);
+let statuses=ld('ept_st',{});
+let assigns=ld('ept_asgn',DEF_ASSIGN);
+let timetable=ld('ept_tt',[]);
+let appMeta=ld('ept_meta',{school:'St. Anne Catholic School',name:'',term:'',examDate:'',theme:'vivid',wizDone:false});
+let undoStack=[];
+let curPage='dashboard';
+let calYear,calMonth,calDateFilter=null;
+let ctxTarget={cls:null,sub:null};
+let donutInst=null,barInst=null;
+
+// ═══ HELPERS ═══
+function getS(cls,sub){return statuses[cls+'_'+sub]??0}
+function setS(cls,sub,val,noUndo){
+  if(!noUndo)undoStack.push({cls,sub,prev:getS(cls,sub)});
+  statuses[cls+'_'+sub]=val;
+  sv('ept_st',statuses);
+  updateSaveTime();
+  checkCompletion(cls,sub);
+}
+function isAsgn(cls,sub){return(assigns[cls]??[]).includes(sub)}
+function clsGrp(c){if(c.name.startsWith('N'))return'n';if(c.name.startsWith('KG'))return'k';return'b'}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{
+    b.classList.toggle('active',['dashboard','checklist','timetable','manage'][i]===p)
+  });
+  document.querySelectorAll('.mnav').forEach((b,i)=>{
+    b.classList.toggle('active',['dashboard','checklist','timetable','manage'][i]===p)
+  });
+  curPage=p;
+  if(p==='dashboard')renderDashboard();
+  if(p==='checklist')renderChecklist();
+  if(p==='timetable'){renderCalendar();renderTimetable()}
+  if(p==='manage')renderManage();
+}
+
+// ═══════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════
+function computeStats(){
+  let tot=0,pen=0,rcv=0,typ=0,prt=0;
+  classes.forEach(c=>subjects.forEach(s=>{
+    if(!isAsgn(c.id,s))return;
+    tot++;const v=getS(c.id,s);
+    if(v===0)pen++;else if(v===1)rcv++;else if(v===2)typ++;else prt++;
+  }));
+  return{tot,pen,rcv,typ,prt};
+}
+
+// ═══════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════
+function renderDashboard(){
+  const st=computeStats();
+  // Scholar ornament
+  const sorn=document.getElementById('scholarOrnament');
+  document.getElementById('scholarTitle').textContent=appMeta.school+' — Examination Progress';
+  document.getElementById('scholarSub').textContent=(appMeta.term||'Current Term')+' · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  // Metrics
+  const ms=document.getElementById('metricsStrip');
+  ms.innerHTML=`
+    <div class="metric"><div class="metric-num" style="color:var(--pendtx)">${st.pen}</div><div class="metric-lbl">Pending</div><div class="metric-sub">Not yet received</div></div>
+    <div class="metric"><div class="metric-num" style="color:var(--received)">${st.rcv}</div><div class="metric-lbl">Received</div><div class="metric-sub">Being typed</div></div>
+    <div class="metric"><div class="metric-num" style="color:var(--typed)">${st.typ}</div><div class="metric-lbl">Typed</div><div class="metric-sub">Ready to print</div></div>
+    <div class="metric"><div class="metric-num" style="color:var(--printed)">${st.prt}</div><div class="metric-lbl">Printed</div><div class="metric-sub">of ${st.tot} total</div></div>`;
+
+  // Subject progress
+  const spl=document.getElementById('subjProgList');spl.innerHTML='';
+  subjects.forEach(sub=>{
+    let tot=0,prt=0,typ=0,rcv=0;
+    classes.forEach(c=>{if(!isAsgn(c.id,sub))return;tot++;const v=getS(c.id,sub);if(v>=1)rcv++;if(v>=2)typ++;if(v===3)prt++});
+    if(!tot)return;
+    const pP=Math.round(prt/tot*100),pT=Math.round(typ/tot*100);
+    spl.innerHTML+=`<div class="prog-item">
+      <div class="prog-hdr"><span>${sub}</span><span style="color:var(--printed);font-family:var(--fm)">${prt}/${tot} printed</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:${pP}%;background:linear-gradient(90deg,var(--printed),#34d399)"></div></div>
+      <div class="prog-legend"><span><span class="legend-dot" style="background:var(--received)"></span>${rcv} rcvd</span><span><span class="legend-dot" style="background:var(--typed)"></span>${typ} typed</span><span><span class="legend-dot" style="background:var(--printed)"></span>${prt} ✓</span></div>
+    </div>`;
+  });
+
+  // Class progress
+  const cpl=document.getElementById('classProgList');cpl.innerHTML='';
+  classes.forEach(c=>{
+    let tot=0,prt=0;
+    subjects.forEach(s=>{if(!isAsgn(c.id,s))return;tot++;if(getS(c.id,s)===3)prt++});
+    if(!tot)return;
+    const pct=Math.round(prt/tot*100);
+    const col=pct===100?'var(--printed)':pct>50?'var(--typed)':pct>0?'var(--received)':'var(--pendtx)';
+    cpl.innerHTML+=`<div class="prog-item">
+      <div class="prog-hdr"><span>${c.name}${c.students?' <small style="color:var(--text2);font-weight:500">('+c.students+' students)</small>':''}</span><span style="color:${col};font-family:var(--fm)">${pct}%</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
+    </div>`;
+  });
+
+  // Donut
+  const dCtx=document.getElementById('donutChart').getContext('2d');
+  if(donutInst)donutInst.destroy();
+  donutInst=new Chart(dCtx,{type:'doughnut',data:{
+    labels:SL,datasets:[{data:[st.pen,st.rcv,st.typ,st.prt],
+      backgroundColor:['#e5e7eb','#f59e0b','#3b82f6','#10b981'],
+      borderWidth:3,borderColor:getComputedStyle(document.documentElement).getPropertyValue('--card').trim()||'#fff'}]
+  },options:{cutout:'70%',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}`}}}}});
+
+  const dl=document.getElementById('donutLeg');
+  dl.innerHTML=['#e5e7eb','#f59e0b','#3b82f6','#10b981'].map((c,i)=>
+    `<div class="dl-item"><div class="dl-dot" style="background:${c}"></div><span>${SL[i]}</span><span class="dl-count">${[st.pen,st.rcv,st.typ,st.prt][i]}</span></div>`).join('');
+
+  // Bar
+  const bCtx=document.getElementById('barChart').getContext('2d');
+  if(barInst)barInst.destroy();
+  const bLabels=classes.map(c=>c.name);
+  const bData=classes.map(c=>{
+    let tot=0,prt=0;subjects.forEach(s=>{if(!isAsgn(c.id,s))return;tot++;if(getS(c.id,s)===3)prt++});
+    return tot?Math.round(prt/tot*100):0;
+  });
+  barInst=new Chart(bCtx,{type:'bar',data:{labels:bLabels,datasets:[{label:'% Printed',data:bData,
+    backgroundColor:bData.map(v=>v===100?'#10b981':v>50?'#3b82f6':v>0?'#f59e0b':'#e5e7eb'),
+    borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{y:{max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(128,128,128,.1)'}},
+              x:{ticks:{font:{size:10}},grid:{display:false}}}}});
+
+  // Next exam
+  renderNextExam();
+  updateCountdown();
+}
+
+function renderNextExam(){
+  const now=new Date();
+  const up=timetable.filter(e=>new Date(e.date+'T'+e.time)>=now).sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time));
+  const ni=document.getElementById('nextExamInfo');
+  if(!up.length){ni.innerHTML='<div class="empty-card"><div class="ej">📅</div><p>No upcoming exams yet.<br>Add them in the Timetable tab.</p></div>';return}
+  const ex=up[0];const dt=new Date(ex.date+'T'+ex.time);
+  const diff=dt-now;const days=Math.floor(diff/86400000);const hrs=Math.floor((diff%86400000)/3600000);const mins=Math.floor((diff%3600000)/60000);
+  ni.innerHTML=`<div class="next-exam-inner">
+    <div class="nex-subject">${ex.subject}</div>
+    <div class="nex-date">📅 ${fmtDate(ex.date)} · ${ex.time}${ex.duration?' · '+ex.duration+'min':''}</div>
+    <div class="nex-countdown"><div class="nex-days">${days>0?days+'d ':''} ${hrs}h ${days===0?mins+'m':''}</div><div class="nex-label">until this exam</div></div>
+    ${up.length>1?`<div class="nex-more">${up.length-1} more exam${up.length>2?'s':''} upcoming</div>`:''}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// CHECKLIST
+// ═══════════════════════════════════════════════
+function renderChecklist(){
+  const fc=document.getElementById('filterClass');
+  const prev=fc.value;
+  fc.innerHTML='<option value="all">All Classes</option>'+classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  if(classes.find(c=>c.id===prev))fc.value=prev;
+
+  // Class pills
+  const pills=document.getElementById('classPills');
+  pills.innerHTML='<span class="cpill ac" id="cpAll" onclick="filterByPill(null,this)">All</span>'+
+    classes.map(c=>`<span class="cpill" id="cp_${c.id}" onclick="filterByPill('${c.id}',this)">${c.name}</span>`).join('');
+
+  const fcv=fc.value;
+  const fsv=document.getElementById('filterStatus').value;
+  const search=document.getElementById('searchInput').value.toLowerCase().trim();
+
+  // Head
+  const head=document.getElementById('clHead');
+  head.innerHTML=`<tr><th>Class</th>${subjects.map(s=>`<th title="${s}">${s}</th>`).join('')}<th>Row</th></tr>`;
+
+  const body=document.getElementById('clBody');
+  body.innerHTML='';
+
+  const filtCls=classes.filter(c=>{
+    if(fcv!=='all'&&c.id!==fcv)return false;
+    if(search&&!c.name.toLowerCase().includes(search)&&!subjects.some(s=>s.toLowerCase().includes(search)))return false;
+    return true;
+  });
+
+  filtCls.forEach(c=>{
+    if(fsv!=='all'&&!subjects.some(s=>isAsgn(c.id,s)&&getS(c.id,s)==fsv))return;
+    if(search&&!c.name.toLowerCase().includes(search)){
+      const hasSubMatch=subjects.some(s=>s.toLowerCase().includes(search)&&isAsgn(c.id,s));
+      if(!hasSubMatch)return;
+    }
+    const grp=clsGrp(c);
+    let row=`<tr class="row-${grp}" data-cls="${c.id}">
+      <td><div class="cls-badge">${c.name}</div>${c.students?`<div class="cls-num">${c.students} stu.</div>`:''}</td>`;
+    subjects.forEach(s=>{
+      if(search&&!s.toLowerCase().includes(search)&&!c.name.toLowerCase().includes(search)){
+        row+=`<td class="na-cell" style="opacity:.3">·</td>`;return;
+      }
+      if(!isAsgn(c.id,s)){row+=`<td class="na-cell">—</td>`;return}
+      const st=getS(c.id,s);
+      if(fsv!=='all'&&st!=fsv){row+=`<td class="na-cell">·</td>`;return}
+      row+=`<td><div class="sc s${st}" onclick="cycleStatus('${c.id}','${s}',this)" oncontextmenu="showCtx(event,'${c.id}','${s}')" title="${SL[st]}: ${c.name} · ${s}">
+        <div class="si">${SI[st]}</div><div class="st">${SA[st]}</div></div></td>`;
+    });
+    // Row actions
+    const rowDone=subjects.filter(s=>isAsgn(c.id,s)&&getS(c.id,s)===3).length;
+    const rowTot=subjects.filter(s=>isAsgn(c.id,s)).length;
+    row+=`<td><div class="row-actions">
+      <button class="btn btn-sm" style="background:var(--prtl);color:var(--printed);border-radius:var(--btnr)" onclick="markRow('${c.id}',3)" title="Mark all printed">✅</button>
+      <span style="font-size:.62rem;color:var(--text2);font-weight:700;font-family:var(--fm)">${rowDone}/${rowTot}</span>
+    </div></td></tr>`;
+    body.innerHTML+=row;
+  });
+}
+
+function cycleStatus(cls,sub,el){
+  const cur=getS(cls,sub);const next=(cur+1)%4;
+  setS(cls,sub,next);
+  el.className=`sc s${next}`;
+  el.querySelector('.si').textContent=SI[next];
+  el.querySelector('.st').textContent=SA[next];
+  el.title=`${SL[next]}: ${cls} · ${sub}`;
+  showToast(`${sub} (${cls.toUpperCase()}) → ${SL[next]}`,cur,cls,sub);
+  if(curPage==='dashboard')renderDashboard();
+}
+
+function markRow(cls,st){
+  subjects.forEach(s=>{if(isAsgn(cls,s))setS(cls,s,st)});
+  renderChecklist();
+  const c=classes.find(x=>x.id===cls);
+  showToast(`${c?.name} → All marked as ${SL[st]} ✅`);
+  if(curPage==='dashboard')renderDashboard();
+}
+
+function markClassDone(){
+  const fc=document.getElementById('filterClass').value;
+  if(fc==='all'){showToast('Select a specific class first');return}
+  markRow(fc,3);
+}
+
+function filterByPill(clsId,el){
+  document.querySelectorAll('.cpill').forEach(p=>p.classList.remove('ac'));
+  el.classList.add('ac');
+  const fc=document.getElementById('filterClass');
+  fc.value=clsId||'all';
+  renderChecklist();
+}
+
+function resetAll(){
+  if(!confirm('Reset ALL statuses to Pending? This cannot be undone.'))return;
+  statuses={};sv('ept_st',statuses);
+  renderChecklist();if(curPage==='dashboard')renderDashboard();
+  showToast('All statuses reset');
+}
+
+function printChecklist(){window.print()}
+
+// Context menu
+function showCtx(e,cls,sub){
+  e.preventDefault();
+  ctxTarget={cls,sub};
+  const m=document.getElementById('ctxMenu');
+  m.style.left=Math.min(e.clientX,window.innerWidth-170)+'px';
+  m.style.top=Math.min(e.clientY,window.innerHeight-220)+'px';
+  m.classList.add('open');
+}
+function ctxSetStatus(st){setS(ctxTarget.cls,ctxTarget.sub,st);renderChecklist();closeCtx();if(curPage==='dashboard')renderDashboard()}
+function ctxMarkRow(st){markRow(ctxTarget.cls,st);closeCtx()}
+function ctxMarkCol(st){const sub=ctxTarget.sub;classes.forEach(c=>{if(isAsgn(c.id,sub))setS(c.id,sub,st)});renderChecklist();closeCtx();showToast(`All classes: ${sub} → ${SL[st]}`);if(curPage==='dashboard')renderDashboard()}
+function closeCtx(){document.getElementById('ctxMenu').classList.remove('open')}
+
+// ═══════════════════════════════════════════════
+// TIMETABLE
+// ═══════════════════════════════════════════════
+function renderCalendar(){
+  const now=new Date();
+  if(calYear===undefined){calYear=now.getFullYear();calMonth=now.getMonth()}
+  // If examDate is set, go to that month initially
+  if(appMeta.examDate&&calYear===now.getFullYear()&&calMonth===now.getMonth()){
+    const ed=new Date(appMeta.examDate);
+    if(!isNaN(ed)){calYear=ed.getFullYear();calMonth=ed.getMonth()}
+  }
+  const d=new Date(calYear,calMonth,1);
+  document.getElementById('calTitle').textContent=d.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const dows=document.getElementById('calDows');
+  dows.innerHTML=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const examDates=new Set(timetable.map(e=>e.date));
+  const grid=document.getElementById('calGrid');grid.innerHTML='';
+  const first=new Date(calYear,calMonth,1).getDay();
+  const days=new Date(calYear,calMonth+1,0).getDate();
+  const prevD=new Date(calYear,calMonth,0).getDate();
+  for(let i=0;i<first;i++)grid.innerHTML+=`<div class="cday other">${prevD-first+i+1}</div>`;
+  for(let d=1;d<=days;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isTod=now.getFullYear()===calYear&&now.getMonth()===calMonth&&now.getDate()===d;
+    const isEx=examDates.has(ds);const isSel=calDateFilter===ds;
+    const cls=isEx?'cday exam-day'+(isSel?' selected':''):isTod?'cday today':isSel?'cday selected':'cday';
+    grid.innerHTML+=`<div class="${cls}" onclick="filterTTDate('${ds}')">${d}</div>`;
+  }
+  const rem=42-first-days;
+  for(let i=1;i<=rem;i++)grid.innerHTML+=`<div class="cday other">${i}</div>`;
+}
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++}renderCalendar()}
+
+function filterTTDate(d){
+  calDateFilter=calDateFilter===d?null:d;
+  renderCalendar();renderTimetable();
+  const filt=document.getElementById('ttDateFilter');
+  if(calDateFilter){
+    filt.style.display='flex';
+    filt.innerHTML=`<span style="font-size:.78rem;font-weight:700;color:var(--text2)">Showing:</span><span style="font-size:.78rem;font-weight:800">${fmtDate(calDateFilter)}</span><button class="btn btn-ghost btn-sm" onclick="calDateFilter=null;renderCalendar();renderTimetable();this.parentElement.style.display='none'">Clear ✕</button>`;
+  }else filt.style.display='none';
+}
+
+function renderTimetable(){
+  const now=new Date();
+  let entries=[...timetable].sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time));
+  if(calDateFilter)entries=entries.filter(e=>e.date===calDateFilter);
+  const grid=document.getElementById('ttGrid');
+  if(!entries.length){
+    grid.innerHTML=`<div class="empty-card" style="grid-column:1/-1"><div class="ej">📅</div><p>No exams scheduled${calDateFilter?' for this date':''}.<br>Click "+ Add Exam" to begin.</p></div>`;return;
+  }
+  grid.innerHTML=entries.map(e=>{
+    const dt=new Date(e.date+'T'+e.time);const isPast=dt<now;
+    const diff=dt-now;const days=Math.floor(diff/86400000);const hrs=Math.floor((diff%86400000)/3600000);
+    const isToday=!isPast&&days===0;
+    const col=SUB_COLORS[subjects.indexOf(e.subject)%SUB_COLORS.length]||SUB_COLORS[0];
+    const chip=isPast?`<span class="tt-chip chip-past">Done</span>`:isToday?`<span class="tt-chip chip-today">TODAY!</span>`:`<span class="tt-chip chip-soon">${days>0?days+'d ':''} ${hrs}h</span>`;
+    return`<div class="tt-card">
+      <div class="tt-head" style="border-left-color:${col};background:${col}18;color:${col}">
+        <div class="tt-subj">${e.subject}</div>
+        <div style="display:flex;align-items:center;gap:6px">${chip}<button class="btn btn-danger btn-xs" onclick="deleteTT('${e.id}')">✕</button></div>
+      </div>
+      <div class="tt-body">
+        <div class="tt-date-lbl">📅 ${fmtDate(e.date)}</div>
+        <div class="tt-time">${e.time}${e.duration?' · '+e.duration+' min':''}</div>
+        ${e.notes?`<div class="tt-notes">📌 ${e.notes}</div>`:''}
+        <div class="tt-classes">${(e.classes||[]).map(c=>`<span class="tt-cls-tag">${c}</span>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// TT Modal
+function openTTModal(){
+  // Subjects
+  const sp=document.getElementById('ttSubPicker');
+  sp.innerHTML=subjects.map(s=>`<div class="sp-tag" onclick="toggleSpTag(this)">${s}</div>`).join('');
+  document.getElementById('ttSelectAll').checked=false;
+  // Classes
+  const cp=document.getElementById('ttClsPicker');
+  cp.innerHTML=classes.map(c=>`<div class="cp-tag" onclick="toggleCpTag(this)">${c.name}</div>`).join('');
+  document.getElementById('ttSelectAllCls').checked=false;
+  // Date
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('ttDate').value=calDateFilter||appMeta.examDate||today;
+  document.getElementById('ttNotes').value='';
+  document.getElementById('ttModalTitle').textContent='Schedule Exam';
+  document.getElementById('ttOverlay').classList.add('open');
+}
+function closeTTModal(){document.getElementById('ttOverlay').classList.remove('open')}
+function toggleSpTag(el){el.classList.toggle('sel');document.getElementById('ttSelectAll').checked=[...document.querySelectorAll('#ttSubPicker .sp-tag')].every(t=>t.classList.contains('sel'))}
+function toggleCpTag(el){el.classList.toggle('sel');document.getElementById('ttSelectAllCls').checked=[...document.querySelectorAll('#ttClsPicker .cp-tag')].every(t=>t.classList.contains('sel'))}
+function toggleSelectAllSubjects(on){document.querySelectorAll('#ttSubPicker .sp-tag').forEach(t=>t.classList.toggle('sel',on))}
+function toggleSelectAllClasses(on){document.querySelectorAll('#ttClsPicker .cp-tag').forEach(t=>t.classList.toggle('sel',on))}
+
+function saveTT(){
+  const subs=[...document.querySelectorAll('#ttSubPicker .sp-tag.sel')].map(t=>t.textContent);
+  const cls=[...document.querySelectorAll('#ttClsPicker .cp-tag.sel')].map(t=>t.textContent);
+  const date=document.getElementById('ttDate').value;
+  const time=document.getElementById('ttTime').value;
+  const dur=document.getElementById('ttDur').value;
+  const notes=document.getElementById('ttNotes').value.trim();
+  if(!subs.length){showToast('Select at least one subject');return}
+  if(!date){showToast('Please pick a date');return}
+  subs.forEach(sub=>{
+    timetable.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),subject:sub,date,time,duration:dur,classes:cls,notes});
+  });
+  sv('ept_tt',timetable);
+  closeTTModal();renderCalendar();renderTimetable();updateCountdown();renderNextExam();
+  showToast(`${subs.length} exam${subs.length>1?'s':''} scheduled for ${fmtDate(date)} 📅`);
+}
+
+function deleteTT(id){
+  timetable=timetable.filter(e=>e.id!==id);sv('ept_tt',timetable);
+  renderCalendar();renderTimetable();updateCountdown();
+  showToast('Exam removed');
+}
+
+// ═══════════════════════════════════════════════
+// MANAGE
+// ═══════════════════════════════════════════════
+let editType=null,editIdx=null;
+
+function renderManage(){
+  // Classes
+  document.getElementById('mClsList').innerHTML=classes.map((c,i)=>`<li class="m-item">
+    <span>${c.name} ${c.students?`<span style="color:var(--text2);font-weight:500;font-size:.75rem">(${c.students} students)</span>`:''}</span>
+    <div class="m-item-acts">
+      <button class="btn btn-ghost btn-xs" onclick="openEdit('cls',${i})">✏️</button>
+      <button class="btn btn-danger btn-xs" onclick="deleteCls(${i})">✕</button>
+    </div></li>`).join('');
+
+  // Subjects
+  document.getElementById('mSubList').innerHTML=subjects.map((s,i)=>`<li class="m-item">
+    <span>${s}</span>
+    <div class="m-item-acts">
+      <button class="btn btn-ghost btn-xs" onclick="openEdit('sub',${i})">✏️</button>
+      <button class="btn btn-danger btn-xs" onclick="deleteSub(${i})">✕</button>
+    </div></li>`).join('');
+
+  // Assignment table
+  const tbl=document.getElementById('assignTbl');
+  let h=`<thead><tr><th style="writing-mode:horizontal-tb;transform:none;height:auto;text-align:left;background:var(--thd)">Class</th>${subjects.map(s=>`<th title="${s}">${s}</th>`).join('')}</tr></thead><tbody>`;
+  classes.forEach(c=>{
+    h+=`<tr><td style="text-align:left;padding-left:12px;font-weight:800;font-size:.8rem">${c.name}</td>`;
+    subjects.forEach(s=>{
+      const on=isAsgn(c.id,s);
+      h+=`<td><div class="atog${on?' on':''}" onclick="toggleAsgn('${c.id}','${s}')">${on?'✓':''}</div></td>`;
+    });
+    h+='</tr>';
+  });
+  tbl.innerHTML=h+'</tbody>';
+}
+
+function toggleAsgn(cls,sub){
+  if(!assigns[cls])assigns[cls]=[];
+  const i=assigns[cls].indexOf(sub);
+  if(i===-1)assigns[cls].push(sub);else assigns[cls].splice(i,1);
+  sv('ept_asgn',assigns);renderManage();
+  showToast(`${cls.toUpperCase()} · ${sub} ${i===-1?'added':'removed'}`);
+}
+
+function addClass(){
+  const name=document.getElementById('newClsName').value.trim();
+  const num=parseInt(document.getElementById('newClsNum').value)||0;
+  if(!name){showToast('Enter a class name');return}
+  if(classes.find(c=>c.name.toLowerCase()===name.toLowerCase())){showToast('Class already exists');return}
+  const id=name.toLowerCase().replace(/[^a-z0-9]/g,'');
+  classes.push({id,name,students:num});assigns[id]=[];
+  sv('ept_cls',classes);sv('ept_asgn',assigns);
+  document.getElementById('newClsName').value='';document.getElementById('newClsNum').value='';
+  renderManage();showToast(`${name} added`);
+}
+
+function deleteCls(i){
+  if(!confirm(`Delete "${classes[i].name}"? All data for this class will be lost.`))return;
+  classes.splice(i,1);sv('ept_cls',classes);renderManage();showToast('Class deleted');
+}
+
+function addSubject(){
+  const name=document.getElementById('newSubName').value.trim();
+  if(!name){showToast('Enter a subject name');return}
+  if(subjects.includes(name)){showToast('Subject already exists');return}
+  subjects.push(name);sv('ept_sub',subjects);
+  document.getElementById('newSubName').value='';renderManage();showToast(`${name} added`);
+}
+
+function deleteSub(i){
+  if(!confirm(`Delete "${subjects[i]}"?`))return;
+  subjects.splice(i,1);sv('ept_sub',subjects);renderManage();showToast('Subject deleted');
+}
+
+function openEdit(type,idx){
+  editType=type;editIdx=idx;
+  const isCls=type==='cls';
+  document.getElementById('editModalTitle').textContent=isCls?'✏️ Edit Class':'✏️ Edit Subject';
+  document.getElementById('editNumFg').style.display=isCls?'block':'none';
+  document.getElementById('editName').value=isCls?classes[idx].name:subjects[idx];
+  if(isCls)document.getElementById('editNum').value=classes[idx].students||'';
+  document.getElementById('editOverlay').classList.add('open');
+}
+function closeEditModal(){document.getElementById('editOverlay').classList.remove('open')}
+function saveEdit(){
+  const name=document.getElementById('editName').value.trim();
+  if(!name){showToast('Name cannot be empty');return}
+  if(editType==='cls'){
+    classes[editIdx].name=name;classes[editIdx].students=parseInt(document.getElementById('editNum').value)||0;
+    sv('ept_cls',classes);
+  }else{
+    const old=subjects[editIdx];subjects[editIdx]=name;
+    Object.keys(assigns).forEach(cid=>{const ai=assigns[cid].indexOf(old);if(ai!==-1)assigns[cid][ai]=name});
+    const ns={};Object.keys(statuses).forEach(k=>{ns[k.replace('_'+old,'_'+name)]=statuses[k]});statuses=ns;
+    sv('ept_sub',subjects);sv('ept_asgn',assigns);sv('ept_st',statuses);
+  }
+  closeEditModal();renderManage();showToast('Saved ✅');
+}
+
+// ═══════════════════════════════════════════════
+// THEME SYSTEM
+// ═══════════════════════════════════════════════
+function applyTheme(id){
+  appMeta.theme=id;sv('ept_meta',appMeta);
+  document.documentElement.setAttribute('data-theme',id);
+  if(donutInst)donutInst.destroy();if(barInst)barInst.destroy();
+  donutInst=null;barInst=null;
+  if(curPage==='dashboard')setTimeout(renderDashboard,50);
+}
+
+function buildThemePreviews(){
+  const grid=document.getElementById('themeGrid');
+  grid.innerHTML=THEMES.map(t=>`<div class="theme-card${appMeta.theme===t.id?' sel':''}" onclick="selectTheme('${t.id}',this)">
+    <div class="theme-preview" style="background:${t.colors[2]}">
+      <div class="tp-bar" style="background:${t.colors[0]};opacity:.9;height:10px"></div>
+      <div class="tp-bar" style="background:${t.colors[1]};opacity:.6;height:6px;width:70%"></div>
+      <div class="tp-card" style="background:white;border-radius:4px;margin-top:6px">
+        <div class="tp-dot" style="background:${t.colors[3]}"></div>
+        <div style="flex:1;background:${t.colors[0]};opacity:.3;border-radius:2px;margin:auto 0;height:4px"></div>
+      </div>
+    </div>
+    <div class="theme-name">${t.name}${appMeta.theme===t.id?'<span class="theme-check">✓</span>':''}</div>
+  </div>`).join('');
+}
+
+function buildWizThemePreviews(){
+  const grid=document.getElementById('wizThemePicker');
+  grid.innerHTML=THEMES.map(t=>`<div class="wiz-theme-card${appMeta.theme===t.id?' sel':''}" onclick="wizSelectTheme('${t.id}',this)">
+    <div class="wiz-tp" style="background:linear-gradient(135deg,${t.colors[0]},${t.colors[1]})"></div>
+    <div class="wiz-tname" style="background:${t.colors[2]};color:${t.colors[0]}">${t.name}</div>
+  </div>`).join('');
+}
+
+function selectTheme(id,el){
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  applyTheme(id);buildThemePreviews();
+}
+function wizSelectTheme(id,el){
+  document.querySelectorAll('.wiz-theme-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  applyTheme(id);
+}
+
+function openThemeModal(){buildThemePreviews();document.getElementById('themeOverlay').classList.add('open')}
+function closeThemeModal(){document.getElementById('themeOverlay').classList.remove('open')}
+
+// ═══════════════════════════════════════════════
+// SETUP WIZARD
+// ═══════════════════════════════════════════════
+let wizStep=1;const WIZ_STEPS=5;
+
+const WIZ_META=[
+  {emoji:'🎓',title:'Welcome!',sub:'Let\'s set up your tracker in under a minute.'},
+  {emoji:'📅',title:'Exam Dates',sub:'When do exams start? We\'ll build your countdown.'},
+  {emoji:'🚀',title:'Current Progress',sub:'Already partway through printing? Catch up instantly.'},
+  {emoji:'🎨',title:'Your Style',sub:'Pick a theme that suits your personality.'},
+  {emoji:'🎉',title:'All done!',sub:'Your workspace is ready to go.'}
+];
+
+function openSetupWizard(rerun){
+  wizStep=1;
+  // Pre-fill fields
+  document.getElementById('wsSchool').value=appMeta.school||'St. Anne Catholic School';
+  document.getElementById('wsName').value=appMeta.name||'';
+  document.getElementById('wsTerm').value=appMeta.term||'';
+  document.getElementById('wsDate').value=appMeta.examDate||'';
+  // Build progress rows
+  buildWizProgressRows();
+  buildWizThemePreviews();
+  updateWizUI();
+  document.getElementById('wizard').classList.add('open');
+}
+
+function buildWizProgressRows(){
+  const rows=document.getElementById('wsProgressRows');
+  rows.innerHTML=subjects.map(s=>{
+    // Find the most common status for this subject across classes
+    const sts=classes.filter(c=>isAsgn(c.id,s)).map(c=>getS(c.id,s));
+    const dominant=sts.length?Math.round(sts.reduce((a,b)=>a+b,0)/sts.length):0;
+    return`<div class="ws-subj-row">
+      <div class="ws-subj-name">${s}</div>
+      <div class="ws-status-btns">
+        ${[0,1,2,3].map(v=>`<button class="wsb s${v}${v===dominant?' active':''}" onclick="wsSetSubject('${s}',${v},this)">${v===0?'Pending':v===1?'Received':v===2?'Typed':'Printed'}</button>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function wsSetSubject(sub,st,btn){
+  btn.closest('.ws-subj-row').querySelectorAll('.wsb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  classes.forEach(c=>{if(isAsgn(c.id,sub))setS(c.id,sub,st,true)});
+  sv('ept_st',statuses);
+}
+
+function wsSetAll(st){
+  subjects.forEach(sub=>{
+    document.querySelectorAll('.ws-subj-row').forEach(row=>{
+      if(row.querySelector('.ws-subj-name').textContent===sub){
+        row.querySelectorAll('.wsb').forEach(b=>b.classList.remove('active'));
+        row.querySelector('.wsb.s'+st).classList.add('active');
+      }
+    });
+    classes.forEach(c=>{if(isAsgn(c.id,sub))setS(c.id,sub,st,true)});
+  });
+  sv('ept_st',statuses);
+}
+
+function updateWizUI(){
+  const m=WIZ_META[wizStep-1];
+  document.getElementById('wizEmoji').textContent=m.emoji;
+  document.getElementById('wizTitle').textContent=m.title;
+  document.getElementById('wizSub').textContent=m.sub;
+  document.getElementById('wizStepLbl').textContent=`Step ${wizStep} of ${WIZ_STEPS}`;
+  document.getElementById('wPrev').style.display=wizStep===1?'none':'inline-flex';
+  document.getElementById('wNext').textContent=wizStep===WIZ_STEPS?'🚀 Launch!':'Next →';
+  // Dots
+  const dots=document.getElementById('wizDots');
+  dots.innerHTML=Array.from({length:WIZ_STEPS},(_,i)=>`<div class="wdot${i+1===wizStep?' on':''}"></div>`).join('');
+  // Steps
+  document.querySelectorAll('.wiz-step-content').forEach((el,i)=>el.classList.toggle('active',i+1===wizStep));
+  // Done summary
+  if(wizStep===5){
+    const st=computeStats();
+    document.getElementById('wsDoneSub').textContent=`${classes.length} classes · ${subjects.length} subjects · ${st.prt} exams printed`;
+    const summary=document.getElementById('wsDoneSummary');
+    summary.innerHTML=`
+      <div style="font-size:.78rem;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Summary</div>
+      <div style="display:grid;gap:6px">
+        <div style="font-size:.82rem;font-weight:700">🏫 ${appMeta.school}</div>
+        ${appMeta.name?`<div style="font-size:.82rem;color:var(--text2)">👤 ${appMeta.name}</div>`:''}
+        ${appMeta.term?`<div style="font-size:.82rem;color:var(--text2)">📖 ${appMeta.term}</div>`:''}
+        ${appMeta.examDate?`<div style="font-size:.82rem;color:var(--text2)">📅 Exams start: ${fmtDate(appMeta.examDate)}</div>`:''}
+        <div style="font-size:.82rem;color:var(--printed)">✅ ${st.prt} printed, ${st.typ} typed, ${st.rcv} received</div>
+      </div>`;
+  }
+}
+
+function wizNext(){
+  if(wizStep===1){
+    // Save school info
+    appMeta.school=document.getElementById('wsSchool').value.trim()||'School';
+    appMeta.name=document.getElementById('wsName').value.trim();
+    appMeta.term=document.getElementById('wsTerm').value.trim();
+    sv('ept_meta',appMeta);
+    document.getElementById('appTitle').textContent='📋 Exam Print Tracker';
+    document.getElementById('appSubtitle').textContent=appMeta.school;
+  }
+  if(wizStep===2){
+    appMeta.examDate=document.getElementById('wsDate').value;
+    sv('ept_meta',appMeta);
+    updateCountdown();
+    // Adjust calendar to exam month
+    if(appMeta.examDate){const ed=new Date(appMeta.examDate);if(!isNaN(ed)){calYear=ed.getFullYear();calMonth=ed.getMonth()}}
+  }
+  if(wizStep===WIZ_STEPS){
+    appMeta.wizDone=true;sv('ept_meta',appMeta);
+    document.getElementById('wizard').classList.remove('open');
+    showPage('dashboard');
+    if(typeof confetti==='function'){
+      confetti({particleCount:150,spread:80,origin:{y:.6}});
+      setTimeout(()=>confetti({particleCount:80,spread:120,origin:{y:.7},startVelocity:20}),400);
+    }
+    return;
+  }
+  if(wizStep<WIZ_STEPS){wizStep++;updateWizUI()}
+}
+function wizPrev(){if(wizStep>1){wizStep--;updateWizUI()}}
+
+// ═══════════════════════════════════════════════
+// COUNTDOWN
+// ═══════════════════════════════════════════════
+function updateCountdown(){
+  const chip=document.getElementById('cdownChip');
+  const now=new Date();
+  // Use nearest upcoming timetable entry OR examDate
+  const up=timetable.filter(e=>new Date(e.date+'T'+e.time)>=now).sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time));
+  let target=null;
+  if(up.length)target=new Date(up[0].date+'T'+up[0].time);
+  else if(appMeta.examDate){target=new Date(appMeta.examDate+'T08:00');if(target<now)target=null}
+  if(!target){document.getElementById('cdownVal').textContent='—';return}
+  const diff=target-now;const days=Math.floor(diff/86400000);const hrs=Math.floor((diff%86400000)/3600000);
+  document.getElementById('cdownVal').textContent=days>0?`${days}d ${hrs}h`:`${hrs}h`;
+}
+
+// ═══════════════════════════════════════════════
+// COMPLETION CELEBRATION
+// ═══════════════════════════════════════════════
+function checkCompletion(cls,sub){
+  // Check if entire class is done
+  const clsObj=classes.find(c=>c.id===cls);
+  const clsDone=subjects.every(s=>!isAsgn(cls,s)||getS(cls,s)===3);
+  if(clsDone&&clsObj&&typeof confetti==='function'){
+    confetti({particleCount:80,spread:60,origin:{y:.5}});
+    showToast(`🎉 ${clsObj.name} — All exams printed!`);
+  }
+  // Check if entire subject is done across all classes
+  const subDone=classes.every(c=>!isAsgn(c.id,sub)||getS(c.id,sub)===3);
+  if(subDone&&typeof confetti==='function'){
+    setTimeout(()=>confetti({particleCount:60,spread:50,origin:{y:.6},colors:['#10b981','#34d399','#6ee7b7']}),200);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// TOAST & UNDO
+// ═══════════════════════════════════════════════
+let toastTimer;
+function showToast(msg,prevVal,cls,sub){
+  const t=document.getElementById('toast');
+  const hasUndo=prevVal!==undefined&&cls&&sub;
+  t.innerHTML=`<span>${msg}</span>${hasUndo?`<button class="toast-undo" onclick="undoLast()">Undo</button>`:''}`;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function undoLast(){
+  if(!undoStack.length){showToast('Nothing to undo');return}
+  const {cls,sub,prev}=undoStack.pop();
+  setS(cls,sub,prev,true);
+  renderChecklist();if(curPage==='dashboard')renderDashboard();
+  showToast(`Undone → ${SL[prev]}`);
+}
+
+function updateSaveTime(){
+  const now=new Date();
+  document.getElementById('saveTime').textContent=`Saved at ${now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+}
+
+// ═══════════════════════════════════════════════
+// SHORTCUTS MODAL
+// ═══════════════════════════════════════════════
+function openShortcutsModal(){document.getElementById('shortcutsOverlay').classList.add('open')}
+function closeShortcutsModal(){document.getElementById('shortcutsOverlay').classList.remove('open')}
+
+// ═══════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════
+function fmtDate(d){return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+
+// Close modals on overlay click
+['ttOverlay','editOverlay','themeOverlay','shortcutsOverlay'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
+});
+
+// Context menu close
+document.addEventListener('click',e=>{if(!e.target.closest('#ctxMenu'))closeCtx()});
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  const inInput=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
+  if(e.key==='Escape'){
+    document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));
+    document.getElementById('wizard').classList.remove('open');
+    closeCtx();
+  }
+  if(inInput)return;
+  if(e.ctrlKey&&e.key==='z'){e.preventDefault();undoLast()}
+  if(e.ctrlKey&&e.key==='p'){e.preventDefault();printChecklist()}
+  if(!e.ctrlKey&&!e.metaKey){
+    if(e.key==='d')showPage('dashboard');
+    if(e.key==='c')showPage('checklist');
+    if(e.key==='t')showPage('timetable');
+    if(e.key==='m')showPage('manage');
+    if(e.key==='?')openShortcutsModal();
+    if(e.key==='p')openThemeModal();
+  }
+});
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+function init(){
+  // Apply saved theme
+  document.documentElement.setAttribute('data-theme',appMeta.theme||'vivid');
+  // Update header
+  document.getElementById('appSubtitle').textContent=appMeta.school||'St. Anne Catholic School';
+  // Render
+  renderDashboard();
+  updateCountdown();
+  setInterval(updateCountdown,60000);
+  // Show wizard if first time
+  if(!appMeta.wizDone){
+    setTimeout(()=>openSetupWizard(false),400);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
